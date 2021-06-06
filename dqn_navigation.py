@@ -54,7 +54,6 @@ def dqn(num_episodes = 2000, epsilon = 1.0, epsilon_decay = .995, min_epsilon = 
         if episode % average_every == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(episode, np.mean(score_window)))
         if np.mean(score_window) >= pass_score:
-            # print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(episode-average_every, np.mean(score_window)))
             torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
             pass_score = np.mean(score_window)
                   

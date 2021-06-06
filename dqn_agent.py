@@ -73,9 +73,9 @@ class Agent():
 
         # Epsilon-greedy action selection
         if random.random() > eps:
-            return np.argmax(action_values.cpu().data.numpy())
+            return np.int(np.argmax(action_values.cpu().data.numpy()))
         else:
-            return random.choice(np.arange(self.action_size))
+            return np.int(random.choice(np.arange(self.action_size)))
 
     
     def learn(self, experiences, gamma):
