@@ -20,7 +20,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class Agent():
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size:int, action_size:int, seed:int):
+    def __init__(self, state_size:int, action_size:int, seed:int, train_mode:bool = True):
         """Initialize an Agent object.
         
         Params
@@ -31,11 +31,12 @@ class Agent():
         """
         self.state_size = state_size
         self.action_size = action_size
+        self.train_mode = train_mode
         torch.manual_seed(seed)
 
         # Q-Network
         self.qnetwork_local = QNetwork(state_size, action_size, seed).to(device)
-        self.qnetwork_target = QNetwork(state_size, action_size, seed).to(device)
+        self.qnetwork_target = QNetwork(state_size, action_size, seed).to(device) if self.train_mode else None
         self.optimizer = optim.Adam(self.qnetwork_local.parameters(), lr=LR)
 
         # Replay memory
@@ -52,7 +53,7 @@ class Agent():
         self.t_step = (self.t_step + 1) % UPDATE_EVERY
         if self.t_step == 0:
             # If enough samples are available in memory, get random subset and learn
-            if len(self.memory) > BATCH_SIZE:
+            if len(self.memory) > BATCH_SIZE and self.train_mode:
                 experiences = self.memory.sample()
                 self.learn(experiences, GAMMA)
 

@@ -22,10 +22,11 @@ state_size = len(env_info.vector_observations[0])
 agent = Agent(state_size = state_size, action_size = action_size, seed=42)
 
 
-def dqn(num_episodes = 2000, epsilon = 1.0, epsilon_decay = .995, min_epsilon = 0.001, average_every = 100, pass_score = 200):
+def dqn(num_episodes = 2000, epsilon = 1.0, epsilon_decay = .995, min_epsilon = 0.001, average_every = 100):
     
     scores = np.empty(num_episodes)
     score_window = deque(maxlen = average_every)   
+    save_score = 0
     
     for episode in range(num_episodes):
         env_info = env.reset(train_mode = True)[brain_name]
@@ -53,9 +54,9 @@ def dqn(num_episodes = 2000, epsilon = 1.0, epsilon_decay = .995, min_epsilon = 
         print('\rEpisode {}\tAverage Score: {:.2f}'.format(episode, np.mean(score_window)), end="")
         if episode % average_every == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(episode, np.mean(score_window)))
-        if np.mean(score_window) >= pass_score:
+        if np.mean(score_window) >= save_score:
             torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
-            pass_score = np.mean(score_window)
+            save_score = np.mean(score_window)
                   
     return scores
 
