@@ -1,4 +1,5 @@
 from collections import deque
+from datetime import datetime
 
 import numpy as np
 import torch
@@ -23,6 +24,8 @@ agent = Agent(state_size = state_size, action_size = action_size, seed=42)
 
 
 def dqn(num_episodes = 2000, epsilon = 1.0, epsilon_decay = .995, min_epsilon = 0.001, average_every = 100):
+    
+    filename = datetime.now().strftime('%d-%m-%y-%H_%m_dqnweights.pth')
     
     scores = np.empty(num_episodes)
     score_window = deque(maxlen = average_every)   
@@ -55,7 +58,7 @@ def dqn(num_episodes = 2000, epsilon = 1.0, epsilon_decay = .995, min_epsilon = 
         if episode % average_every == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(episode, np.mean(score_window)))
         if np.mean(score_window) >= save_score:
-            torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
+            torch.save(agent.qnetwork_local.state_dict(), filename)
             save_score = np.mean(score_window)
                   
     return scores
